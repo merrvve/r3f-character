@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useConfiguratorStore } from "../store"
-
+import { useConfiguratorStore, pb } from "../store"
+ 
 const AssetsBox = () => {
   const { categories, currentCategory, fetchCategories, setCurrentCategory } =
     useConfiguratorStore();
@@ -18,12 +18,27 @@ const AssetsBox = () => {
                         key={category.id || category.name}
                         onClick={()=>setCurrentCategory(category)}
                         className={`transition-colors duration-300 font-medium ${
-                            currentCategory.name === category.name ? 'text-slate-700' : 'text-slate-900'
+                            currentCategory.name === category.name ? 'text-indigo-500' : 'text-gray-500 hover:text-gray-700'
                         }`}
                     >
                        {category.name} 
                     </button>
                 ))
+            }
+        </div>
+        <div className="flex flex-wrap gap-2">
+            {
+                currentCategory?.assets.map((asset,index)=> (
+                    <button
+                        key={index}
+                        className={`w-20 h-20 pointer-events-auto bg-gray-200 hover:opacity-100 border-2 transition-all duration-500
+                            rounded-md`}
+                        >
+                            <img src={pb.files.getUrl(asset, asset.thumbnail)} />
+                    </button>
+                )
+
+                )
             }
         </div>
     </div>
@@ -47,10 +62,11 @@ export const UI = () => {
                     <a href="#link" className="pointer-events-auto">Logo</a>
                     <DownloadButton />
                 </div>
+                <div className="flex flex-col gap-6">
+                    <AssetsBox />
+                </div>
             </div>
-            <div className="flex flex-col gap-6">
-               <AssetsBox />
-            </div>
+            
         </main>
     )
 }

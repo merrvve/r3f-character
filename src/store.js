@@ -6,7 +6,7 @@ const pocketbaseUrl = import.meta.env.VITE_POCKETBASE_URL
 if(!pocketbaseUrl) {
     throw new Error('VITE_POCKETBASE_URL is required.')
 }
-const pb = new PocketBase(pocketbaseUrl);
+export const pb = new PocketBase(pocketbaseUrl);
 
 export const useConfiguratorStore = create((set) => ({
   categories: [],
@@ -22,7 +22,12 @@ export const useConfiguratorStore = create((set) => ({
         sort: '-created',
     });
 
-    console.log('Fetched categories:', categories); 
+    
+
+    categories.forEach((category)=>{
+        category.assets = assets.filter(asset => asset.group === category.id);
+        console.log("category",category.assets)
+    })
     set({categories, currentCategory: categories[0], assets})
   },
   setCurrentCategory: (category) => { set({currentCategory:category}) }
