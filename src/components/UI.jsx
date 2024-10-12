@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useConfiguratorStore, pb } from "../store"
  
 const AssetsBox = () => {
-  const { categories, currentCategory, fetchCategories, setCurrentCategory } =
+  const { categories, currentCategory, fetchCategories, setCurrentCategory, changeAsset, customization } =
     useConfiguratorStore();
   useEffect(() => {
     fetchCategories();
@@ -32,7 +32,11 @@ const AssetsBox = () => {
                     <button
                         key={index}
                         className={`w-20 h-20 pointer-events-auto bg-gray-200 hover:opacity-100 border-2 transition-all duration-500
-                            rounded-md`}
+                            rounded-md ${
+                                customization[currentCategory.name]?.asset?.id === asset?.id ? 
+                                'border-indigo-600 opacity-100' : 'opacity-80 border-transparent'
+                            }`}
+                        onClick={()=> changeAsset(currentCategory.name,asset)}
                         >
                             <img src={pb.files.getUrl(asset, asset.thumbnail)} />
                     </button>
