@@ -51,8 +51,11 @@ const AssetsBox = () => {
 };
 
 const DownloadButton = () => {
+    const download = useConfiguratorStore((state)=> state.download)
     return (
-        <button className="px-4 py-3 pointer-events-auto">
+        <button className="px-3 py-2 pointer-events-auto bg-indigo-500 hover:bg-indigo-700 text-white font-medium rounded-lg"
+            onClick={download}
+        >
             Download
         </button>
     )

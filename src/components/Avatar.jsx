@@ -1,14 +1,50 @@
-import { Suspense, useRef } from "react";
-import { useGLTF } from "@react-three/drei";
+import { Suspense, useEffect, useRef } from "react";
+import { useAnimations, useFBX, useGLTF } from "@react-three/drei";
 import { useConfiguratorStore } from "../store";
 import { pb } from "../store";
 import { Asset } from "./Asset";
+import { GLTFExporter } from "three/examples/jsm/Addons.js";
 
 export const Avatar = ({...props}) => {
     const group = useRef()
     const { nodes } = useGLTF('/models/Armature.glb')
     const customization = useConfiguratorStore((state)=>state.customization)
-    console.log(nodes);
+    const { animations } = useFBX('/models/Idle.fbx')
+    const {actions} = useAnimations(animations,group)
+    const setDownload = useConfiguratorStore((state)=> state.setDownload)
+
+    useEffect(()=>{
+        function download() {
+            const exporter = new GLTFExporter();
+            exporter.parse(
+                group.current,
+                function (result) {
+                    save(
+                        new Blob([result],{type:'application/octet-stream'}), `avatar_${+new Date()}.glb`
+                    )
+                },
+                function ( error) {
+                    console.log(error)
+                },
+                {binary: true}
+            )
+        }
+        const link = document.createElement('a');
+        link.style.display = 'none';
+        document.body.appendChild(link);
+
+        function save(blob, filename) {
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        }
+        setDownload(download)
+    },[])
+
+    useEffect(()=>{
+        actions['mixamo.com'].play();
+    },[actions])
+
     return (
         <group ref={group} {...props} dispose={null}>
         <group name="Scene">
